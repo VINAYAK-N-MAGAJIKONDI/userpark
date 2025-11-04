@@ -71,22 +71,36 @@ const QRButton = styled(Link)`
 
 const SpotsList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 `;
 
 const SpotCard = styled.div`
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(16,24,40,0.06);
   background-color: white;
   cursor: pointer;
   user-select: none;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+    transform: translateY(-6px);
+    box-shadow: 0 10px 30px rgba(16,24,40,0.12);
+  }
+
+  @media (max-width: 640px) {
+    padding: 14px;
+    border-radius: 8px;
   }
 `;
 
@@ -133,11 +147,11 @@ useEffect(() => {
     <HomeContainer>
       <Header>
         <h1>Available Parking Spots</h1>
-        <div>
+        {/* <div>
           <QRButton to="/qr">Show QR</QRButton>
           <ProfileButton to="/profile">Profile</ProfileButton>
           <LogoutButton onClick={logout}>Logout</LogoutButton>
-        </div>
+        </div> */}
       </Header>
 
       {loading ? (

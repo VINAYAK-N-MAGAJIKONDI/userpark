@@ -4,26 +4,25 @@ import { Navigate } from 'react-router-dom';
 
 const LoginContainer = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: #f5f5f5;
+  min-height: calc(100vh - 64px);
+  padding: 24px;
 `;
 
 const LoginButton = styled.button`
-  padding: 12px 24px;
+  padding: 12px 20px;
   background-color: #4285f4;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  width: 100%;
+  max-width: 360px;
+  transition: background-color 0.18s, transform 0.12s;
 
-  &:hover {
-    background-color: #3367d6;
-  }
+  &:hover { background-color: #3367d6; transform: translateY(-2px); }
 `;
 
 const Login = () => {
@@ -35,11 +34,11 @@ const Login = () => {
 
   return (
     <LoginContainer>
-      <h1>Welcome to UserPark</h1>
-      <p>Find the nearest parking spot with ease</p>
-      <LoginButton onClick={signInWithGoogle}>
-        Sign in with Google
-      </LoginButton>
+      <div style={{ width: '100%', maxWidth: 420, background: 'white', padding: 20, borderRadius: 12, boxShadow: '0 6px 18px rgba(16,24,40,0.08)', textAlign: 'center' }}>
+        <h1 style={{ marginTop: 8 }}>Smart Spot</h1>
+        <p style={{ color: '#666' }}>Find the nearest parking spot and manage your wallet.</p>
+        <LoginButton onClick={signInWithGoogle}>Sign in with Google</LoginButton>
+      </div>
     </LoginContainer>
   );
 };

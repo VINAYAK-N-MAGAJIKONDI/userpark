@@ -7,15 +7,21 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 const Container = styled.div`
-  padding: 20px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 80px; /* space for bottom nav */
+  flex-direction: column;
 `;
 
 const Card = styled.div`
+  width: 100%;
   max-width: 520px;
-  padding: 24px;
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: 12px;
   background: white;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 20px rgba(16,24,40,0.06);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -25,7 +31,9 @@ const Card = styled.div`
 const QRWrapper = styled.div`
   background: white;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ShowQR: React.FC = () => {
@@ -68,8 +76,8 @@ const ShowQR: React.FC = () => {
         <p>Loading...</p>
       ) : (
         <Card>
-          <p><strong>Your 3-digit code</strong></p>
-          <p style={{fontSize: 22, letterSpacing: 4}}>{userid || '—'}</p>
+          {/* <p><strong>Your 3-digit code</strong></p>
+          <p style={{fontSize: 22, letterSpacing: 4}}>{userid || '—'}</p> */}
 
           {userid ? (
             <QRWrapper>

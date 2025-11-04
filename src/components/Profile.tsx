@@ -6,15 +6,20 @@ import { db } from '../config/firebase';
 import { Navigate } from 'react-router-dom';
 
 const ProfileContainer = styled.div`
-  padding: 20px;
+  padding: 8px 12px 80px; /* leave space for bottom nav */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    flex-direction: column;
 `;
 
 const Card = styled.div`
-  max-width: 480px;
-  padding: 20px;
-  border-radius: 8px;
+  width: 100%;
+  max-width: 520px;
+  padding: 18px;
+  border-radius: 12px;
   background: white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 20px rgba(16,24,40,0.06);
 `;
 
 const Profile = () => {
