@@ -147,15 +147,15 @@ const Admin = () => {
           </div>
           <div className="card gradient">
             <div className="card-title">Total Revenue</div>
-            <div className="card-value">₹{totals.totalRevenue.toFixed(2)}</div>
+            <div className="card-value">₹{totals.adminCollected.toFixed(2)}</div>
           </div>
         </section>
 
         <section className="admin-panel">
-          <div className="panel-header">
+          {/* <div className="panel-header">
             <h2>Admin Stats</h2>
             <div className="admin-balance">Balance: ₹{totals.adminBalance} • Collected: ₹{totals.adminCollected}</div>
-          </div>
+          </div> */}
 
           <div className="panel-body">
             <div className="left">
