@@ -54,6 +54,21 @@ const ProfileButton = styled(Link)`
   }
 `;
 
+const QRButton = styled(Link)`
+  padding: 8px 12px;
+  margin-right: 12px;
+  background-color: #28a745;
+  color: white;
+  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #218838;
+  }
+`;
+
 const SpotsList = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -119,6 +134,7 @@ useEffect(() => {
       <Header>
         <h1>Available Parking Spots</h1>
         <div>
+          <QRButton to="/qr">Show QR</QRButton>
           <ProfileButton to="/profile">Profile</ProfileButton>
           <LogoutButton onClick={logout}>Logout</LogoutButton>
         </div>
