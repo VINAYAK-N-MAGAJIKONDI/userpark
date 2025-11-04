@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import styled from 'styled-components';
@@ -36,6 +36,21 @@ const LogoutButton = styled.button`
 
   &:hover {
     background-color: #c82333;
+  }
+`;
+
+const ProfileButton = styled(Link)`
+  padding: 8px 12px;
+  margin-right: 12px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0069d9;
   }
 `;
 
@@ -103,7 +118,10 @@ useEffect(() => {
     <HomeContainer>
       <Header>
         <h1>Available Parking Spots</h1>
-        <LogoutButton onClick={logout}>Logout</LogoutButton>
+        <div>
+          <ProfileButton to="/profile">Profile</ProfileButton>
+          <LogoutButton onClick={logout}>Logout</LogoutButton>
+        </div>
       </Header>
 
       {loading ? (

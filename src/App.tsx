@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './contexts/AuthContext';
 import Login from './components/Login';
 import Home from './components/Home';
+import Profile from './components/Profile';
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </AuthProvider>
