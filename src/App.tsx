@@ -5,6 +5,7 @@ import Home from './components/Home';
 import Profile from './components/Profile';
 import ShowQR from './components/ShowQR';
 import Layout from './components/Layout';
+import Admin from './components/Admin';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/home" element={<Layout><Home /></Layout>} />
           <Route path="/profile" element={<Layout><Profile /></Layout>} />
           <Route path="/qr" element={<Layout><ShowQR /></Layout>} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </AuthProvider>
