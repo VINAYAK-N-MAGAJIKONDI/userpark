@@ -1,3 +1,4 @@
+// import React, { useEffect, useState, useCallback } from 'react';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate, Link } from 'react-router-dom';
@@ -18,6 +19,7 @@ interface ParkingSpot {
   slotid3: boolean;
   slotid4: boolean;
   slotid5: boolean;
+  address: string;
 }
 
 interface ReservationStatus {
@@ -28,140 +30,151 @@ interface ReservationStatus {
   spotId?: string;
 }
 
+// 🎨 Modern Android-Inspired Styling
 const HomeContainer = styled.div`
+  min-height: 100vh;
   padding: 20px;
+  background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+  color: #111827;
+  font-family: 'Inter', sans-serif;
 `;
 
 const Header = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e293b;
+  }
+`;
+
+const ActionBar = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const ActionButton = styled(Link)<{ color?: string }>`
+  padding: 10px 16px;
+  background-color: ${({ color }) => color || '#2563eb'};
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+
+  &:hover {
+    transform: translateY(-2px);
+    background-color: ${({ color }) => color || '#1d4ed8'};
+  }
 `;
 
 const LogoutButton = styled.button`
-  padding: 8px 16px;
-  background-color: #dc3545;
+  padding: 10px 16px;
+  background-color: #ef4444;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.25);
 
   &:hover {
-    background-color: #c82333;
-  }
-`;
-
-const ProfileButton = styled(Link)`
-  padding: 8px 12px;
-  margin-right: 12px;
-  background-color: #007bff;
-  color: white;
-  text-decoration: none;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #0069d9;
-  }
-`;
-
-const QRButton = styled(Link)`
-  padding: 8px 12px;
-  margin-right: 12px;
-  background-color: #28a745;
-  color: white;
-  text-decoration: none;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #218838;
+    background-color: #dc2626;
+    transform: translateY(-2px);
   }
 `;
 
 const SpotsList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-
-  @media (max-width: 640px) {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
 `;
 
 const SpotCard = styled.div`
-  padding: 16px;
-  border-radius: 10px;
-  box-shadow: 0 4px 14px rgba(16,24,40,0.06);
-  background-color: white;
-  user-select: none;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
-
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   gap: 12px;
 
   &:hover {
     transform: translateY(-6px);
-    box-shadow: 0 10px 30px rgba(16,24,40,0.12);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
   }
 
-  @media (max-width: 640px) {
-    padding: 14px;
-    border-radius: 8px;
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  p {
+    color: #6b7280;
+    font-size: 14px;
   }
 `;
 
 const SlotGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  margin-top: 8px;
+  gap: 10px;
+  margin-top: 10px;
 `;
 
 const SlotButton = styled.button<{ isAvailable: boolean }>`
-  padding: 8px;
+  padding: 10px;
   border: none;
-  border-radius: 6px;
-  background-color: ${props => props.isAvailable ? '#10B981' : '#EF4444'};
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13px;
+  background: ${({ isAvailable }) => (isAvailable ? '#22c55e' : '#ef4444')};
   color: white;
-  font-size: 12px;
-  cursor: ${props => props.isAvailable ? 'pointer' : 'not-allowed'};
-  opacity: ${props => props.isAvailable ? 1 : 0.7};
-  transition: all 0.2s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  cursor: ${({ isAvailable }) => (isAvailable ? 'pointer' : 'not-allowed')};
+  opacity: ${({ isAvailable }) => (isAvailable ? 1 : 0.6)};
+  transition: all 0.2s ease;
 
   &:hover {
-    transform: ${props => props.isAvailable ? 'scale(1.05)' : 'none'};
+    transform: ${({ isAvailable }) => (isAvailable ? 'scale(1.07)' : 'none')};
   }
 
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
+  &:active {
+    transform: ${({ isAvailable }) => (isAvailable ? 'scale(0.96)' : 'none')};
   }
 `;
 
-const ReservationStatus = styled.div<{ success?: boolean }>`
-  padding: 12px;
-  border-radius: 8px;
-  background-color: ${props => props.success ? '#DEF7EC' : '#FEE2E2'};
-  color: ${props => props.success ? '#03543F' : '#9B1C1C'};
+const ReservationStatusBox = styled.div<{ success?: boolean }>`
   margin-top: 12px;
+  padding: 14px;
+  border-radius: 10px;
+  background-color: ${({ success }) => (success ? '#dcfce7' : '#fee2e2')};
+  color: ${({ success }) => (success ? '#166534' : '#991b1b')};
   font-size: 14px;
+  font-weight: 500;
 `;
 
 const BookingCode = styled.div`
-  background: #1E293B;
-  color: #E2E8F0;
+  margin-top: 8px;
+  background: #1e293b;
+  color: #e2e8f0;
+  font-family: 'Roboto Mono', monospace;
   padding: 12px;
   border-radius: 8px;
-  font-family: monospace;
   font-size: 16px;
   text-align: center;
-  margin-top: 8px;
+  letter-spacing: 1px;
 `;
 
 const Home: React.FC = () => {
@@ -195,6 +208,7 @@ const Home: React.FC = () => {
           slotid3: data.slotid3 ?? true,
           slotid4: data.slotid4 ?? true,
           slotid5: data.slotid5 ?? true,
+          address: data.address || 'Unknown',
         };
       });
 
@@ -221,42 +235,30 @@ const Home: React.FC = () => {
     });
 
     try {
-      // Start a transaction to handle reservation
       await runTransaction(db, async (transaction) => {
-        // 1. Read all required documents first
         const userDoc = doc(db, 'users', user.uid);
         const spotDoc = doc(db, 'parkslot', spotId);
         const adminDoc = doc(db, 'users', 'admin123');
         const reservationRef = doc(collection(db, 'reservations'));
 
-        // 2. Get all documents in parallel for efficiency
         const [userSnapshot, spotSnapshot, adminSnapshot] = await Promise.all([
           transaction.get(userDoc),
           transaction.get(spotDoc),
           transaction.get(adminDoc)
         ]);
 
-        // 3. Extract and validate data
         const userData = userSnapshot.data();
         const spotData = spotSnapshot.data();
         const adminData = adminSnapshot.data();
         const currentBalance = userData?.wallet?.balance || 0;
 
-        // 4. Validate conditions
-        if (currentBalance < 5) {
-          throw new Error('Insufficient balance. Need ₹5 for reservation.');
-        }
+        if (currentBalance < 5) throw new Error('Insufficient balance. Need ₹5 for reservation.');
+        if (!spotData || !spotData[slotKey]) throw new Error('Slot no longer available.');
 
-        if (!spotData || !spotData[slotKey]) {
-          throw new Error('Slot no longer available.');
-        }
-
-        // 5. Generate reservation data
         const bookingCode = `${Date.now().toString(36)}${Math.random().toString(36).substr(2, 5)}`.toUpperCase();
         const expiresAt = new Date();
         expiresAt.setMinutes(expiresAt.getMinutes() + 30);
 
-        // 6. Perform all writes after all reads and validations
         transaction.set(reservationRef, {
           user_id: user.uid,
           spot_id: spotId,
@@ -290,7 +292,6 @@ const Home: React.FC = () => {
           bookingCode
         });
 
-        // Refresh parking spots data
         fetchParkingSpots();
       });
     } catch (error: any) {
@@ -303,71 +304,57 @@ const Home: React.FC = () => {
     }
   };
 
-
-
   if (!user) return <Navigate to="/login" replace />;
 
   return (
     <HomeContainer>
       <Header>
         <h1>Available Parking Spots</h1>
-        {/* <div>
-          <QRButton to="/qr">Show QR</QRButton>
-          <ProfileButton to="/profile">Profile</ProfileButton>
-          <LogoutButton onClick={logout}>Logout</LogoutButton>
-        </div> */}
       </Header>
 
       {loading ? (
         <p>Loading parking spots...</p>
       ) : (
         <SpotsList>
-          {parkingSpots.map((spot) => {
+          {parkingSpots.map((spot) => (
+            <SpotCard key={spot.id}>
+              <h3>{spot.name}</h3>
+              <p>Available Slots: {spot.available}</p>
+              <p>Location: {spot.address}</p>
+              
+              <SlotGrid>
+                {[1, 2, 3, 4, 5].map((num) => {
+                  const slotKey = `slotid${num}` as keyof ParkingSpot;
+                  const isAvailable = Boolean(spot[slotKey]);
+                  return (
+                    <SlotButton
+                      key={num}
+                      isAvailable={isAvailable}
+                      disabled={!isAvailable || reservationStatus.loading}
+                      onClick={() => handleReserveSlot(spot.id, slotKey)}
+                    >
+                      Slot {num}
+                    </SlotButton>
+                  );
+                })}
+              </SlotGrid>
 
-
-            return (
-              <SpotCard key={spot.id}>
-                <h3>{spot.name}</h3>
-                <p>Available Slots: {spot.available}</p>
-                <p className="text-sm text-gray-600">
-                  Location: {spot.location.lat.toFixed(6)}, {spot.location.long.toFixed(6)}
-                </p>
-                
-                <SlotGrid>
-                  {[1, 2, 3, 4, 5].map((num) => {
-                    const slotKey = `slotid${num}` as keyof ParkingSpot;
-                    const isAvailable = Boolean(spot[slotKey]);
-                    
-                    return (
-                      <SlotButton
-                        key={num}
-                        isAvailable={isAvailable}
-                        disabled={!isAvailable || reservationStatus.loading}
-                        onClick={() => handleReserveSlot(spot.id, slotKey)}
-                      >
-                        Slot {num}
-                      </SlotButton>
-                    );
-                  })}
-                </SlotGrid>
-
-                {reservationStatus.error && spot.id === reservationStatus.spotId && (
-                  <ReservationStatus>
-                    {reservationStatus.error}
-                  </ReservationStatus>
-                )}
-                
-                {reservationStatus.success && spot.id === reservationStatus.spotId && (
-                  <ReservationStatus success>
-                    Slot reserved successfully!
-                    <BookingCode>
-                      Booking Code: {reservationStatus.bookingCode}
-                    </BookingCode>
-                  </ReservationStatus>
-                )}
-              </SpotCard>
-            );
-          })}
+              {reservationStatus.error && spot.id === reservationStatus.spotId && (
+                <ReservationStatusBox>
+                  {reservationStatus.error}
+                </ReservationStatusBox>
+              )}
+              
+              {reservationStatus.success && spot.id === reservationStatus.spotId && (
+                <ReservationStatusBox success>
+                  Slot reserved successfully!
+                  <BookingCode>
+                    Booking Code: {reservationStatus.bookingCode}
+                  </BookingCode>
+                </ReservationStatusBox>
+              )}
+            </SpotCard>
+          ))}
         </SpotsList>
       )}
     </HomeContainer>
