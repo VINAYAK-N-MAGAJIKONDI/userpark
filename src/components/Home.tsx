@@ -252,7 +252,7 @@ const Home: React.FC = () => {
         const adminData = adminSnapshot.data();
         const currentBalance = userData?.wallet?.balance || 0;
 
-        if (currentBalance < 5) throw new Error('Insufficient balance. Need ₹5 for reservation.');
+        if (currentBalance < 50) throw new Error('Insufficient balance. Need ₹50 for reservation.');
         if (!spotData || !spotData[slotKey]) throw new Error('Slot no longer available.');
 
         const bookingCode = `${Date.now().toString(36)}${Math.random().toString(36).substr(2, 5)}`.toUpperCase();
@@ -266,7 +266,7 @@ const Home: React.FC = () => {
           created_at: serverTimestamp(),
           expires_at: expiresAt,
           status: 'active',
-          reservation_fee: 5,
+          reservation_fee: 50,
           booking_code: bookingCode
         });
 
@@ -276,12 +276,12 @@ const Home: React.FC = () => {
         });
 
         transaction.update(userDoc, {
-          'wallet.balance': currentBalance - 5
+          'wallet.balance': currentBalance - 50
         });
 
         transaction.update(adminDoc, {
-          'wallet.balance': (adminData?.wallet?.balance || 0) + 5,
-          'wallet.total_collected': (adminData?.wallet?.total_collected || 0) + 5
+          'wallet.balance': (adminData?.wallet?.balance || 0) + 50,
+          'wallet.total_collected': (adminData?.wallet?.total_collected || 0) + 50
         });
 
         setReservationStatus({
