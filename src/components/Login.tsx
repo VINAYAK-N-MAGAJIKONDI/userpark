@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -21,11 +22,20 @@ const LoginButton = styled.button`
   width: 100%;
   max-width: 360px;
   transition: background-color 0.18s, transform 0.12s;
-
   &:hover { background-color: #3367d6; transform: translateY(-2px); }
 `;
 
-const Login = () => {
+const Card = styled.div`
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(16,24,40,0.08);
+  text-align: center;
+`;
+
+const Login: React.FC = () => {
   const { user, signInWithGoogle } = useAuth();
 
   if (user) {
@@ -34,11 +44,11 @@ const Login = () => {
 
   return (
     <LoginContainer>
-      <div style={{ width: '100%', maxWidth: 420, background: 'white', padding: 20, borderRadius: 12, boxShadow: '0 6px 18px rgba(16,24,40,0.08)', textAlign: 'center' }}>
+      <Card>
         <h1 style={{ marginTop: 8 }}>Smart Spot</h1>
         <p style={{ color: '#666' }}>Find the nearest parking spot and manage your wallet.</p>
         <LoginButton onClick={signInWithGoogle}>Sign in with Google</LoginButton>
-      </div>
+      </Card>
     </LoginContainer>
   );
 };
