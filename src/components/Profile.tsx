@@ -5,23 +5,133 @@ import { doc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { Navigate } from 'react-router-dom';
 
+// 🎨 Styled Components
 const ProfileContainer = styled.div`
-  padding: 8px 12px 80px; /* leave space for bottom nav */
+  // min-height: 100vh;
+  background: #f7f9fc;
   display: flex;
   align-items: center;
   justify-content: center;
-    flex-direction: column;
+  padding: 40px 16px;
 `;
 
 const Card = styled.div`
   width: 100%;
-  max-width: 520px;
-  padding: 18px;
-  border-radius: 12px;
-  background: white;
-  box-shadow: 0 6px 20px rgba(16,24,40,0.06);
+  max-width: 450px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.08);
+  padding: 32px 28px;
+  text-align: center;
+  transition: all 0.3s ease;
 `;
 
+const Avatar = styled.div`
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #007bff;
+  color: white;
+  font-weight: 600;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+`;
+
+const Name = styled.h2`
+  margin-bottom: 4px;
+  color: #1d2939;
+`;
+
+const Email = styled.p`
+  color: #475467;
+  font-size: 15px;
+  margin-bottom: 20px;
+`;
+
+const Info = styled.div`
+  
+  border-radius: 12px;
+  padding: 16px;
+  text-align: left;
+  margin-bottom: 20px;
+
+  p {
+    margin: 6px 0;
+    color: #344054;
+    font-size: 15px;
+
+    strong {
+      color: #101828;
+    }
+  }
+`;
+
+const Wallet = styled.div`
+  background: #e8f3ff;
+  color: #084298;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: inline-block;
+  margin-bottom: 16px;
+  font-weight: 600;
+`;
+
+const Button = styled.button<{ variant?: 'primary' | 'success' | 'secondary' }>`
+  background: ${({ variant }) =>
+    variant === 'success'
+      ? '#28a745'
+      : variant === 'secondary'
+      ? '#6c757d'
+      : '#007bff'};
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+const AddMoneyForm = styled.form`
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  margin-top: 12px;
+
+  input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #d0d5dd;
+    font-size: 15px;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  p {
+    font-size: 14px;
+    margin-top: 6px;
+    color: #475467;
+  }
+`;
+
+// ⚡ Component
 const Profile = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState<any | null>(null);
@@ -41,11 +151,8 @@ const Profile = () => {
       try {
         const ref = doc(db, 'users', user.uid);
         const snap = await getDoc(ref);
-        if (snap.exists()) {
-          setProfile(snap.data());
-        } else {
-          setProfile(null);
-        }
+        if (snap.exists()) setProfile(snap.data());
+        else setProfile(null);
       } catch (err) {
         console.error('Error fetching profile:', err);
       } finally {
@@ -58,25 +165,35 @@ const Profile = () => {
 
   if (!user) return <Navigate to="/login" replace />;
 
+  const initials =
+    profile?.name?.charAt(0)?.toUpperCase() ||
+    user?.displayName?.charAt(0)?.toUpperCase() ||
+    '?';
+
   return (
     <ProfileContainer>
-      <h1>Your Profile</h1>
       {loading ? (
         <p>Loading...</p>
       ) : (
         <Card>
-          <p><strong>Name:</strong> {profile?.name || user.displayName}</p>
-          <p><strong>Email:</strong> {profile?.email || user.email}</p>
-          <p><strong>UserID:</strong> {profile?.userid || '—'}</p>
-          <p><strong>Wallet balance:</strong> {profile?.wallet?.balance != null ? profile.wallet.balance : '0'}</p>
+          <Avatar>{initials}</Avatar>
+          <Name>{profile?.name || user.displayName || 'User'}</Name>
+          <Email>{profile?.email || user.email}</Email>
 
-          <div style={{ marginTop: 12 }}>
-            {!showAdd ? (
-              <button onClick={() => { setShowAdd(true); setMessage(null); }} style={{ padding: '8px 12px', background: '#007bff', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}>
-                Add Money
-              </button>
-            ) : (
-              <form onSubmit={async (e) => {
+          <Wallet>
+             Wallet Balance: ₹
+            {profile?.wallet?.balance != null ? profile.wallet.balance : '0'}
+          </Wallet>
+
+          <Info>
+
+          </Info>
+
+          {!showAdd ? (
+            <Button onClick={() => setShowAdd(true)}>Add Money</Button>
+          ) : (
+            <AddMoneyForm
+              onSubmit={async (e) => {
                 e.preventDefault();
                 setMessage(null);
                 const v = parseFloat(amount);
@@ -90,25 +207,44 @@ const Profile = () => {
                   await updateDoc(userRef, { 'wallet.balance': increment(v) });
                   const snap = await getDoc(userRef);
                   if (snap.exists()) setProfile(snap.data());
-                  setMessage('Amount added successfully');
+                  setMessage('Amount added successfully ✅');
                   setAmount('');
                   setShowAdd(false);
                 } catch (err) {
                   console.error('Error adding money:', err);
-                  setMessage('Failed to add amount');
+                  setMessage('Failed to add amount ❌');
                 } finally {
                   setSubmitting(false);
                 }
-              }}>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  <input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Amount" type="number" step="0.01" min="0" style={{ padding: 8, borderRadius: 4, border: '1px solid #ddd' }} />
-                  <button type="submit" disabled={submitting} style={{ padding: '8px 12px', background: '#28a745', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}>{submitting ? 'Adding...' : 'Submit'}</button>
-                  <button type="button" onClick={() => { setShowAdd(false); setAmount(''); setMessage(null); }} style={{ padding: '8px 12px', background: '#6c757d', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}>Cancel</button>
-                </div>
-                {message && <p style={{ marginTop: 8 }}>{message}</p>}
-              </form>
-            )}
-          </div>
+              }}
+            >
+              <input
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Enter amount"
+                type="number"
+                step="0.01"
+                min="0"
+              />
+              <div className="btn-group">
+                <Button type="submit" variant="success" disabled={submitting}>
+                  {submitting ? 'Adding...' : 'Submit'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    setShowAdd(false);
+                    setAmount('');
+                    setMessage(null);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+              {message && <p>{message}</p>}
+            </AddMoneyForm>
+          )}
         </Card>
       )}
     </ProfileContainer>

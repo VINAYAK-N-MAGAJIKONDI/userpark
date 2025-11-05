@@ -108,6 +108,7 @@ const SpotCard = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  cursor: pointer; /* 👈 makes it clickable */
 
   &:hover {
     transform: translateY(-6px);
@@ -125,6 +126,7 @@ const SpotCard = styled.div`
     font-size: 14px;
   }
 `;
+
 
 const SlotGrid = styled.div`
   display: grid;
@@ -316,45 +318,57 @@ const Home: React.FC = () => {
         <p>Loading parking spots...</p>
       ) : (
         <SpotsList>
-          {parkingSpots.map((spot) => (
-            <SpotCard key={spot.id}>
-              <h3>{spot.name}</h3>
-              <p>Available Slots: {spot.available}</p>
-              <p>Location: {spot.address}</p>
-              
-              <SlotGrid>
-                {[1, 2, 3, 4, 5].map((num) => {
-                  const slotKey = `slotid${num}` as keyof ParkingSpot;
-                  const isAvailable = Boolean(spot[slotKey]);
-                  return (
-                    <SlotButton
-                      key={num}
-                      isAvailable={isAvailable}
-                      disabled={!isAvailable || reservationStatus.loading}
-                      onClick={() => handleReserveSlot(spot.id, slotKey)}
-                    >
-                      Slot {num}
-                    </SlotButton>
-                  );
-                })}
-              </SlotGrid>
+{parkingSpots.map((spot) => (
+  <SpotCard
+    key={spot.id}
+    onClick={() =>
+      window.open(
+        `https://www.google.com/maps/dir/?api=1&destination=${spot.location.lat},${spot.location.long}`,
+        '_blank'
+      )
+    }
+  >
+    <h3>{spot.name}</h3>
+    <p>Available Slots: {spot.available}</p>
+    <p>Location: {spot.address}</p>
 
-              {reservationStatus.error && spot.id === reservationStatus.spotId && (
-                <ReservationStatusBox>
-                  {reservationStatus.error}
-                </ReservationStatusBox>
-              )}
-              
-              {reservationStatus.success && spot.id === reservationStatus.spotId && (
-                <ReservationStatusBox success>
-                  Slot reserved successfully!
-                  <BookingCode>
-                    Booking Code: {reservationStatus.bookingCode}
-                  </BookingCode>
-                </ReservationStatusBox>
-              )}
-            </SpotCard>
-          ))}
+    <SlotGrid>
+      {[1, 2, 3, 4, 5].map((num) => {
+        const slotKey = `slotid${num}` as keyof ParkingSpot;
+        const isAvailable = Boolean(spot[slotKey]);
+        return (
+          <SlotButton
+            key={num}
+            isAvailable={isAvailable}
+            disabled={!isAvailable || reservationStatus.loading}
+            onClick={(e) => {
+              e.stopPropagation(); // 👈 Prevent opening maps
+              handleReserveSlot(spot.id, slotKey);
+            }}
+          >
+            Slot {num}
+          </SlotButton>
+        );
+      })}
+    </SlotGrid>
+
+    {reservationStatus.error && spot.id === reservationStatus.spotId && (
+      <ReservationStatusBox>
+        {reservationStatus.error}
+      </ReservationStatusBox>
+    )}
+
+    {reservationStatus.success && spot.id === reservationStatus.spotId && (
+      <ReservationStatusBox success>
+        Slot reserved successfully!
+        <BookingCode>
+          Booking Code: {reservationStatus.bookingCode}
+        </BookingCode>
+      </ReservationStatusBox>
+    )}
+  </SpotCard>
+))}
+
         </SpotsList>
       )}
     </HomeContainer>
