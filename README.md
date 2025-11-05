@@ -3,8 +3,30 @@
 
 This repository contains the admin dashboard for Smart Parking — a React + Vite single-page app used to manage parking reservations, users, payments, slot inventory and system alerts. It uses Firebase for backend services (Firestore auth & storage).
 
-This README explains how to run, build, and extend the project, describes the folder layout and the important components, and documents how the app uses Firebase collections.
+---
 
+## Live Deployment
+
+* **User Side:** [https://userpark.vercel.app/](https://userpark.vercel.app/)
+* **Admin Dashboard:** [https://userpark.vercel.app/admin](https://userpark.vercel.app/admin)
+
+---
+
+## Features
+
+* **User Portal**
+
+  * Check parking slot availability.
+  * Add money to wallet.
+  * View parking history.
+
+* **Admin Dashboard**
+
+  * Monitor parking slots in real-time.
+  * View transactions and user wallet balances.
+  * Manage users and parking sessions.
+
+---
 ## Quick summary
 
 - Framework: React (functional components, hooks)
