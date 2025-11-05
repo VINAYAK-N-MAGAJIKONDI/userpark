@@ -17,8 +17,7 @@ interface ParkingSpot {
   slotid1: boolean;
   slotid2: boolean;
   slotid3: boolean;
-  slotid4: boolean;
-  slotid5: boolean;
+
   address: string;
 }
 
@@ -208,8 +207,7 @@ const Home: React.FC = () => {
           slotid1: data.slotid1 ?? true,
           slotid2: data.slotid2 ?? true,
           slotid3: data.slotid3 ?? true,
-          slotid4: data.slotid4 ?? true,
-          slotid5: data.slotid5 ?? true,
+
           address: data.address || 'Unknown',
         };
       });
@@ -333,7 +331,7 @@ const Home: React.FC = () => {
     <p>Location: {spot.address}</p>
 
     <SlotGrid>
-      {[1, 2, 3, 4, 5].map((num) => {
+      {[1, 2, 3].map((num) => {
         const slotKey = `slotid${num}` as keyof ParkingSpot;
         const isAvailable = Boolean(spot[slotKey]);
         return (

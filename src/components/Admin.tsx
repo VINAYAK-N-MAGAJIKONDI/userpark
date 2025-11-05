@@ -200,8 +200,7 @@ const Admin = () => {
                         <div>Slot1: <span className={`badge ${s.slotid1 ? 'ok' : 'bad'}`}>{s.slotid1 ? 'Free' : 'Occupied'}</span></div>
                         <div>Slot2: <span className={`badge ${s.slotid2 ? 'ok' : 'bad'}`}>{s.slotid2 ? 'Free' : 'Occupied'}</span></div>
                         <div>Slot3: <span className={`badge ${s.slotid3 ? 'ok' : 'bad'}`}>{s.slotid3 ? 'Free' : 'Occupied'}</span></div>
-                        <div>Slot4: <span className={`badge ${s.slotid4 ? 'ok' : 'bad'}`}>{s.slotid4 ? 'Free' : 'Occupied'}</span></div>
-                        <div>Slot5: <span className={`badge ${s.slotid5 ? 'ok' : 'bad'}`}>{s.slotid5 ? 'Free' : 'Occupied'}</span></div>
+
                         {/* <div className="muted small">{s.lat ?? '—'}, {s.long ?? '—'}</div> */}
                       </div>
                     </div>
